@@ -14,8 +14,8 @@ def create_app(config_name):
     bootstrap.init_app(app)
     db.init_app(app)
 
-    from .talks import talks as talks_blueprint
-    app.register_blueprint(talks_blueprint)
+    from .matches import matches as matches_blueprint
+    app.register_blueprint(matches_blueprint)
 
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/auth')

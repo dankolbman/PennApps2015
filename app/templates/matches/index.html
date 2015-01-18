@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<h1>Latest Conversations</h1>
+
+
+<ul class="user-list">
+  {% for user in users %}
+    <li class="user">
+       <h2><a href="{{ url_for('matches.user', id=user.id) }}">{{ user.name }}</a></h2>
+    </li>
+  {% endfor %}
+</ul>
+
+
+
+{% endblock %}
