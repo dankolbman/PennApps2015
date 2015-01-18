@@ -25,11 +25,11 @@
         {% if msgs %}
           {% for msg in msgs %}
             {% if msg.user_id == 1 %}
-            <div class="alert alert-info match">
-              <b>{{ user.name }} -</b> {{ msg }} <div class="floaty"><b>{{ msg.timestamp }}</b></div>
+            <div class="alert alert-info match" style="float: left; width: 100%; text-align: left;">
+              <b>{{ user.name }}:</b> {{ msg }} <div class="floaty" style="float: right;"><b>{{ msg.timestamp }}</b></div>
             {% else %}
-            <div class="alert alert-success me">
-               <div class="floaty"><b>{{ msg.timestamp }}</b></div> {{ msg }} <b>- (Cleverbot) Me</b>
+            <div class="alert alert-success me" style="float: left; width: 100%; text-align: left;">
+              <b>Me (Cleverbot):</b> {{ msg }}<div class="floaty" style="float: right;"><b>{{ msg.timestamp }}</b></div> 
             {% endif %}
             </div>
           {% endfor %}

@@ -34,7 +34,7 @@ def update(fbID=fbID()):
   token = loadToken()
   tinder = registerTinder(token, fbID)
   
-  tim = (datetime.datetime.now()-datetime.timedelta(12,0,0)).strftime('%Y-%m-%d')
+  tim = (datetime.datetime.now()-datetime.timedelta(1,0,0)).strftime('%Y-%m-%d')
   updates = tinder.post_updates(tim)
 
   lat = 39.95
@@ -72,7 +72,7 @@ def update_db(data, me):
         print('There was a collision on', uid2)
         continue
 
-      if match['messages'][-1] in match['messages']:
+      if len(match['messages']) > 0:
         last_active = dateutil.parser.parse(match['messages'][-1]['sent_date'])
       else:
         last_active = dateutil.parser.parse(match['created_date'])

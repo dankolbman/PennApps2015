@@ -14,12 +14,13 @@ def index():
   #pagination = User.query.order_by(User.id.desc()).paginate(page, per_page = current_app.config['CHATS_PER_PAGE'], error_out=False)
   #user_list = pagination.items
 
-  user_list = User.query.order_by(User.last_active.desc()).limit(50).all()
-  user_list = user_list[1:]
+  user_list = User.query.order_by(User.last_active.desc()).limit(75).all()
+  user_list = user_list[40:]
   for user in user_list:
     user.last_active = user.last_active.strftime('%I:%M %p, %B %d')
     match = Match.query.filter_by(user_id_2=user.id).first()
-    user.num_msgs = Message.query.filter_by(match_id=match.match_id).count()
+    if match != None:
+      user.num_msgs = Message.query.filter_by(match_id=match.match_id).count()
 
   return render_template('matches/index.html', users=user_list)
 #, pagination=pagination)
@@ -39,7 +40,7 @@ def user(id):
   for msg in msgs:
     if msg.user_id == id:
       msg.user_id = 1
-    msg.timestamp = msg.timestamp.strftime('%I:%M %p, %B %d')
+    msg.timestamp = msg.timestamp.strftime('%I:%M %p')
 
   return render_template('matches/user.html',user=usr,photos=photos,msgs=msgs)
 
