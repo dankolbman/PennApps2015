@@ -1,30 +1,32 @@
 from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 
 
+# Users hold our matches with their info and conversations
 class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(64),
-                      nullable=False, unique=True, index=True)
-    username = db.Column(db.String(64),
-                         nullable=False, unique=True, index=True)
-    is_admin = db.Column(db.Boolean)
-    password_hash = db.Column(db.String(128))
-    name = db.Column(db.String(64))
-    location = db.Column(db.String(64))
-    bio = db.Column(db.Text())
-    member_since = db.Column(db.DateTime(), default=datetime.utcnow)
-    avatar_hash = db.Column(db.String(32))
+  __tablename__ = 'users'
+  id = db.Column(db.String(64), primary_key=True)
+  name = db.Column(db.String(64), nullable=False)
+  bio = db.Column(db.Text())
+  #match = db.relationship('Match', lazy='dynamic', backref='matcher')
+  #match = db.Column(db.String(64), db.ForeignKey('matches.match_id'))
+  
 
-    @property
-    def password(self):
-        raise AttributeError('password is not a readable attribute')
+class Match(db.Model):
+  __tablename__  = 'matches'
+  match_id = db.Column(db.String(64), primary_key=True)
+  user_id_1 = db.Column(db.String(64), db.ForeignKey('users.id'))
+  user_id_2 = db.Column(db.String(64), db.ForeignKey('users.id'))
 
-    @password.setter
-    def password(self, password):
-        self.password_hash = generate_password_hash(password)
+# Holds a message that is part of a users conversation with us
+class Message(db.Model):
+  __tablename__ = 'messages'
+  id = db.Column(db.Integer, primary_key=True)
+  match_id = db.Column(db.String(256), db.ForeignKey('matches.match_id'))
+  body = db.Column(db.Text)
+  timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+  user_id = db.Column(db.String(100), db.ForeignKey('users.id'))
+  
+  def __str__(self):
+    return str(self.body)
 
-    def verify_password(self, password):
-        return check_password_hash(self.password_hash, password)
