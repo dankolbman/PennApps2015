@@ -29,4 +29,4 @@ class Message(db.Model):
   
   def __str__(self):
     return str(self.body)
-
+    

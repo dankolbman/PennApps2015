@@ -1,37 +1,58 @@
-#!/usr/bin/env python
-import os, json, datetime
-from flask import escape
-from app import create_app
-from flask.ext.script import Manager
-from sqlalchemy import text
-from app import db
-from app.models import User, Match, Message
+from . import db
+import tinder
+import json
+from models import User, Match, Message
+import subprocess
 
-app = create_app(os.getenv('FLASK_CONFIG') or 'default')
-manager = Manager(app)
+def fbID():
+  return '100003853009183'
 
+def newToken():
+  p = subprocess.Popen(('ruby fbauth.rb', str(1)))
+  p.wait()
+  return loadToken()
 
-@manager.command
-def adduser(id, match_id, name, bio):
-    """Register a new user."""
-    db.create_all()
-    user = User(id=id, match_id=match_id,name=name,bio=bio)
-    db.session.add(user)
-    db.session.commit()
+def loadToken():
+  f = open('fb_token.tmp')
+  fbToken = f.readline()
+  f.close()
+  return fbToken
 
-@manager.command
-def load_db(update_data):
-  data = json.load(open(update_data))
+def registerTinder(fbToken, fbID):
+  token = {
+    'facebook_token': fbToken,
+    'facebook_id': fbID
+  }
+  return tinder.tinderClient(token)
 
-  me = '54b1f298028d748a414fb24d'
+# Update user database
+def update(fbID=fbID()):
+
+  token = loadToken()
+  tinder = registerTinder(token, fbID)
+  
+  updates = tinder.post_updates()
+
+  lat = 39.95
+  lon = -75.166667
+  #ret = tinder.updateLocation(lat, lon)
+
+  me = tinder.get_profile()['_id']
+
+  update_db(updates, me)
+
+# Updates the db with new messages and matches
+def update_db(data, me):
   
   #print( json.dumps(data['matches'][0], indent=4) )
-
-  db.create_all()
-
-  u1 = User(id=me, name='ME', bio='')
-  db.session.add(u1)
-  db.session.commit()
+  u1 = None
+  # If I am already in db, get that entry for first user
+  if User.query.filter_by(id=me).count() == 1:
+    u1 = User.query.filter_by(id=me).first()
+  else:     # OW we need to make a me entry
+    u1 = User(id=me, name='ME', bio='')
+    db.session.add(u1)
+    db.session.commit()
 
 
   # Iterate matches
@@ -76,7 +97,5 @@ def load_db(update_data):
   db.session.commit()
 
 
-
-if __name__ == '__main__':
-    manager.run()
+  
 
