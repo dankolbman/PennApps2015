@@ -8,6 +8,8 @@ class User(db.Model):
   id = db.Column(db.String(64), primary_key=True)
   name = db.Column(db.String(64), nullable=False)
   bio = db.Column(db.Text())
+  last_active = db.Column(db.DateTime, default=datetime.utcnow)
+  thumb_url = db.Column(db.String(1024))
   #match = db.relationship('Match', lazy='dynamic', backref='matcher')
   #match = db.Column(db.String(64), db.ForeignKey('matches.match_id'))
   
@@ -29,4 +31,11 @@ class Message(db.Model):
   
   def __str__(self):
     return str(self.body)
+
+# Hold an image    
+class Photo(db.Model):
+  __tablename__ = 'photos'
+  id = db.Column(db.Integer, primary_key=True)
+  user_id = db.Column(db.String(100), db.ForeignKey('users.id'))
+  url = db.Column(db.String(1024))
     

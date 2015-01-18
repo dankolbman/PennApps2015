@@ -6,9 +6,26 @@
 
 <ul class="user-list">
   {% for user in users %}
-    <li class="user">
-       <h2><a href="{{ url_for('matches.user', id=user.id) }}">{{ user.name }}</a></h2>
-    </li>
+    <div class="panel panel-default">
+      <div class="panel-body user">
+        <div class="row">
+          <div class="col-md-2">
+            <a href="{{ url_for('matches.user', id=user.id) }}" class="thumbnail">
+              <img src="{{ user.thumb_url }}" width="86px" height="86px">
+            </a>
+          </div>
+          <div class="col-md-5">
+           <h2><a href="{{ url_for('matches.user', id=user.id) }}">{{ user.name }}</a></h2>
+            <h4>{{ user.num_msgs }} messages</h4>
+            Last activity: {{ user.last_active }}
+          </div>
+          <div class="col-md-5">
+            <h4>Biography</h4>
+            <p>{{ user.bio }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   {% endfor %}
 </ul>
 

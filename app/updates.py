@@ -1,6 +1,7 @@
 from . import db
 import tinder
 import json
+import dateutil.parser
 from models import User, Match, Message
 import subprocess
 
@@ -67,7 +68,9 @@ def update_db(data, me):
         print('There was a collision on', uid2)
         continue
 
-      u2 = User(id=uid2,name=match['person']['name'],bio=match['person']['bio'])
+      last_active = dateutil.parser.parse(match['messages'][-1]['sent_date'])
+      thumb = match['person']['photos'][0]['processedFiles'][3]['url']
+      u2 = User(id=uid2,name=match['person']['name'],bio=match['person']['bio'],last_active=last_active,thumb_url=thumb)
       db.session.add(u2)
 
       # Create Match
@@ -79,11 +82,10 @@ def update_db(data, me):
       m = Match(match_id=mid, user_id_1=me, user_id_2=uid2)
       db.session.add(m)
 
+      # Make messages
       for msg in match['messages']:
-        #print(len(match['messages']))
         body = text(msg['message'])
         timestamp = datetime.datetime.fromtimestamp(msg['timestamp']/1000.0)
-        #timestamp = timestamp.strftime("%Y-%m-%d %H:%M:%S")
         author_id = str(u2.id)
         if msg['from'] == me:
           author_id = me
@@ -94,6 +96,14 @@ def update_db(data, me):
         #msg = Message(match_id=' ',body=' ',timestamp=' ', user_id=' ')
         db.session.add(msg)
 
+      # Add photos
+      for photo in match['person']['photos']:
+        url = photo['processedFiles'][0]['url']
+        if Photo.query.filter_by(url=url).count() > 0:
+          print('There was a collision on', mid)
+          continue
+        pht = Photo(user_id=uid2, url=url)
+        db.session.add(pht)
   db.session.commit()
 
 

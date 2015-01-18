@@ -2,7 +2,25 @@
 
 {% block page_content %}
 <div class="page-header">
-    <h1>{{ user.name }}</h1>
+
+   <div class="jumbotron">
+    <div class="container">
+      <h1>{{ user.name }}</h1>
+      <div class="row">
+        <div class="col-md-12">
+          {% for photo in photos %}
+            <img src="{{ photo.url }}" width="220" height="220px">
+          {% endfor %}
+          <div class="row">
+           <h3>Biography</h3>
+           <p>{{ user.bio }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> 
+
+  <h2>Chat History:</h2>
 
     {% if msgs %}
       <ul>
@@ -10,6 +28,8 @@
           <li> {{ msg }} </li>
         {% endfor %}
       </ul>
+    {% else %}
+      <h3>No chat yet :(</h3>
     {% endif %}
 </div>
 {% endblock %}
