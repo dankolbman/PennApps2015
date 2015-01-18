@@ -19,17 +19,24 @@
       </div>
     </div>
   </div> 
-
   <h2>Chat History:</h2>
-
-    {% if msgs %}
-      <ul>
-        {% for msg in msgs %}
-          <li> {{ msg }} </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <h3>No chat yet :(</h3>
-    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-body">
+        {% if msgs %}
+          {% for msg in msgs %}
+            {% if msg.user_id == 1 %}
+            <div class="alert alert-info match">
+              <b>{{ user.name }} -</b> {{ msg }} <div class="floaty"><b>{{ msg.timestamp }}</b></div>
+            {% else %}
+            <div class="alert alert-success me">
+               <div class="floaty"><b>{{ msg.timestamp }}</b></div> {{ msg }} <b>- (Cleverbot) Me</b>
+            {% endif %}
+            </div>
+          {% endfor %}
+        {% else %}
+          <h3>No chat yet :(</h3>
+        {% endif %}
+    </div>
+  </div>
 </div>
 {% endblock %}

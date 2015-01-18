@@ -2,7 +2,9 @@ from . import db
 import tinder
 import json
 import dateutil.parser
-from models import User, Match, Message
+import datetime
+from sqlalchemy import text
+from models import User, Match, Message, Photo
 import subprocess
 
 def fbID():
@@ -32,7 +34,8 @@ def update(fbID=fbID()):
   token = loadToken()
   tinder = registerTinder(token, fbID)
   
-  updates = tinder.post_updates()
+  tim = (datetime.datetime.now()-datetime.timedelta(12,0,0)).strftime('%Y-%m-%d')
+  updates = tinder.post_updates(tim)
 
   lat = 39.95
   lon = -75.166667
@@ -40,6 +43,7 @@ def update(fbID=fbID()):
 
   me = tinder.get_profile()['_id']
 
+  print(updates)
   update_db(updates, me)
 
 # Updates the db with new messages and matches
@@ -68,7 +72,10 @@ def update_db(data, me):
         print('There was a collision on', uid2)
         continue
 
-      last_active = dateutil.parser.parse(match['messages'][-1]['sent_date'])
+      if match['messages'][-1] in match['messages']:
+        last_active = dateutil.parser.parse(match['messages'][-1]['sent_date'])
+      else:
+        last_active = dateutil.parser.parse(match['created_date'])
       thumb = match['person']['photos'][0]['processedFiles'][3]['url']
       u2 = User(id=uid2,name=match['person']['name'],bio=match['person']['bio'],last_active=last_active,thumb_url=thumb)
       db.session.add(u2)

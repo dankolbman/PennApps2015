@@ -38,4 +38,3 @@ class Photo(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   user_id = db.Column(db.String(100), db.ForeignKey('users.id'))
   url = db.Column(db.String(1024))
-    

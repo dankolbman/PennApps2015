@@ -1,4 +1,5 @@
 from flask import render_template, current_app, request, url_for
+import datetime
 from . import matches
 from .. import updates, db
 from ..models import User, Match, Message, Photo
@@ -34,6 +35,11 @@ def user(id):
   msgs = Message.query.filter_by(match_id=match.match_id).all()
   #msgs = msgs.order_by(Message.timestamp.desc())
   photos = Photo.query.filter_by(user_id=id).all()
+
+  for msg in msgs:
+    if msg.user_id == id:
+      msg.user_id = 1
+    msg.timestamp = msg.timestamp.strftime('%I:%M %p, %B %d')
 
   return render_template('matches/user.html',user=usr,photos=photos,msgs=msgs)
 
