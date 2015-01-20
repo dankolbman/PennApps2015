@@ -15,7 +15,6 @@ def index():
   #user_list = pagination.items
 
   user_list = User.query.order_by(User.last_active.desc()).limit(75).all()
-  user_list = user_list[40:]
   for user in user_list:
     user.last_active = user.last_active.strftime('%I:%M %p, %B %d')
     match = Match.query.filter_by(user_id_2=user.id).first()
