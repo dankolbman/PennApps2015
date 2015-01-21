@@ -15,10 +15,10 @@ def create_app(config_name):
     db.init_app(app)
 
     from .matches import matches as matches_blueprint
-    app.register_blueprint(matches_blueprint)
+    app.register_blueprint(matches_blueprint, url_prefix='/matches')
 
     from .auth import auth as auth_blueprint
-    app.register_blueprint(auth_blueprint, url_prefix='/auth')
+    app.register_blueprint(auth_blueprint)
 
     return app
 

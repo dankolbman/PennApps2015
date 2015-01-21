@@ -14,7 +14,7 @@ def index():
   #pagination = User.query.order_by(User.id.desc()).paginate(page, per_page = current_app.config['CHATS_PER_PAGE'], error_out=False)
   #user_list = pagination.items
 
-  user_list = User.query.order_by(User.last_active.desc()).limit(75).all()
+  user_list = User.query.filter(User.name!='ME').order_by(User.last_active.desc()).limit(75).all()
   for user in user_list:
     user.last_active = user.last_active.strftime('%I:%M %p, %B %d')
     match = Match.query.filter_by(user_id_2=user.id).first()
