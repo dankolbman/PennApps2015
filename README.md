@@ -1,3 +1,3 @@
 Tind4Me
 ========
-Autonomous Dating
+The dating world is a dark, time consuming, emotionally exhausting place. Wouldn't it be great if you just had someone or something to take care of all the tears and heart-break for you? Well now you can! Introducing Tind4Me, a completely automated dating interface to automate you're affection and carry your emotional burdens. All you need to do is train an image identifier to establish your tastes and the rest will be done for you. We will connect your liklihood through Tinder and match you with your desired selection. We'll even automate conversations using Cleverbot. We aim to make relationships so hands off, you won't even need to know you significant other's name!
